@@ -1,0 +1,68 @@
+Deployment Guide
+
+
+STEP 1 - INSTALLING PostgreSQL, phpPgAdmin AND Apache2
+PostgreSQL and PhpPgAdmin are available in the Ubuntu repository. So you just need to install them with the apt command.
+	sudo apt-get -y install postgresql postgresql-contrib phppgadmin
+The above command will automatically install all packages needed by PostgreSQL, like Apache, PHP etc.
+
+
+STEP 2 - CONFIGURE PostgreSQL user
+PostgreSQL uses role for user authentication and authorization, it just like Unix-Style permissions.
+By default, PostgreSQL creates a new user called "postgres" for basic authentication.
+To use PostgreSQL, you need to login to the "postgres" account, you can do that by typing:
+	sudo su
+	su - postgres
+
+Now you can access the PostgreSQL prompt with the command:
+	psql
+
+And then change the password for postgres role by typing:
+	\password postgres
+
+	ENTER YOUR PASSWORD
+
+Then enter \q to leave the psql command line.
+
+Run the command "exit" to leave the postgres user and become root again.
+	exit
+
+	
+STEP 3 - CONFIGURE Apache2
+You need to configure apache for phpPgAdmin. Edit the file /etc/apache2/conf-available/phppgadmin.conf with nano by typing:
+	cd /etc/apache2/conf-available/
+	nano phppgadmin.conf
+
+Comment out the line #Require local by adding a # in front of the line and add below the line allow from all so that you can access from your browser.
+
+
+STEP 4 - CONFIGURE phpPgAdmin
+Edit the file /etc/phppgadmin/config.inc.php by typing :
+	cd /etc/phppgadmin/
+	nano config.inc.php
+
+Find the line $conf['extra_login_security'] = true; and change the value to false so you can login to phpPgAdmin with user postgres.
+
+
+STEP 5 - RESTART PostgreSQL AND Apache2
+	systemctl restart postgresql
+	systemctl restart apache2
+
+	
+STEP 6 - TESTING
+Now access phpPgAdmin with your browser http://your-ip-address/phppgadmin/ e.g 192.168.1.100/phppgadmin
+and then try login to with user postgres and your password.
+
+STEP 7 - DEPLOY
+Place all the required webapp files from github in the document root for apache.
+The default document root for Apache is /var/www/ or /var/www/html depending on the linux version or OS.
+Access the files in the browser using http://localhost/filename.html/
+
+
+
+Alternativel 1 Installation method: Install Bitnami LAPP stack which will provide provides a complete, fully-integrated and ready to run LAPP development environment.
+In addition to PHP, PostgreSQL and Apache, it includes phpPgAdmin and other components and frameworks.
+Place the files to be hosted in the Bitnami default folder which is /opt/bitnami/apache2/htdocs/.
+
+
+Alternative 2 Installation method: 54john.blogspot.co.ke/2012/03/how-to-build-lapp-linux-apache-postgres.html
